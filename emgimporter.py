@@ -30,7 +30,11 @@ def import_data(name=None,path=[]):
     fList = [(os.path.basename(f.split('-',1)[0]), datetime.strptime(f.split('-',1)[1],"%Y%m%d-%H%M%S"), f)
               for f in glob.glob(os.path.join(os.path.expanduser('~'),*path,'**'),recursive=True)
               if not f.startswith('.') and not os.path.isdir(f)]
-    return [pd.read_csv(f[2], skiprows=1, header=None, delim_whitespace=True) for f in fList  if name == None or f[0] == name]
+    try:
+        return [pd.read_csv(f[2], skiprows=1, header=None, delim_whitespace=True) for f in fList  if name == None or f[0] == name]
+    except:
+        print("well... ", name)
+        pass
 
 def prep_data(feed_dic,data_arch):
     x = list()
