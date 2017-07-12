@@ -11,7 +11,7 @@ import pickle
 import time
 
 loadstuff = False
-filename = 'CNN_test'
+filename = 'exp_tests'
 
 def augmentData(x,y,nb_roll,steps):
     assert len(x.shape) > 1
@@ -67,7 +67,7 @@ x_cut_train= np.expand_dims(np.expand_dims(x_cut_train,axis=1),axis=-1)
 x_cut_test= np.expand_dims(np.expand_dims(x_cut_test,axis=1),axis=-1)
 
 x,y = augmentData(x_cut_train,y_cut_train,2,1)
-
+x = padStuff(x,expsize=(4,4),axis=2,mode='wrap')
 
 
 from keras.layers.convolutional import Conv1D
@@ -117,7 +117,8 @@ for hidden_layers in range(*explorationStruct['hidden_layer']):
             activation        = 'relu'
 
             model = Sequential()
-            model.add(Conv2D(filters=nb_filters,kernel_size=(1,8),input_shape=(1,8,1)))
+            model.add(Conv2D(filters=nb_filters,kernel_size=(1,8),input_shape=(1,16,1)))
+            model.add(MaxPooling2D(pool_size=(1, 8)))
             model.add(Activation(activation))
             model.add(Dropout(0.2))
 
