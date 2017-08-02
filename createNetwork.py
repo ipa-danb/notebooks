@@ -10,7 +10,7 @@ import emgimporter
 import pickle
 import time
 
-filename = 'CNN_test'
+filename = 'tobias_test_tools_v2'
 
 # Stuck with np.roll as "scipy.ndimage.shift destroys data from edges (Trac #796)" -- gg
 def augmentData(x,y,nb_roll,steps):
@@ -31,7 +31,8 @@ dic = { 1: 'Tasse aufnehmen',
         8: 'Ruhe (Supination)',
         9: 'Ruhe (Pronation)'
       }
-its = ['cupv1','cupv2','kettlev1','data','loosev1']
+#its = ['cupv1','cupv2','kettlev1','data','loosev1','jascha','markus','Sirius', 'korbi','tobias','tobias2, tobias3']
+its = ['cupv1','cupv2','kettlev1','data','jascha','korbi','loosev1','tobias','tobias2','tobias3','tobias4Tool']
 
 trainStruct = { 'hidden_layer':      1,
                 'neurons_per_layer': 20,
@@ -133,7 +134,7 @@ from keras.callbacks import EarlyStopping
 early_stopping = EarlyStopping(monitor='val_loss',patience=100,min_delta=0.0005)
 history = AccuracyHistory()
 
-model.fit(x,y,epochs = 1000, batch_size = 3000, validation_split=0.1, shuffle=True, callbacks = [early_stopping,history], verbose=1)
+model.fit(x,y,epochs = 150, batch_size = 3000, validation_split=0.1, shuffle=True, callbacks = [early_stopping,history], verbose=1)
 scores = model.evaluate(x_cut_test, y_cut_test, batch_size=1000, verbose=1)
 tbn = datetime.now()
 print("\n------------------------")
