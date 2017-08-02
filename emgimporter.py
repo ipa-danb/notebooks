@@ -3,6 +3,7 @@ from datetime import datetime
 import glob
 import pandas as pd
 import numpy as np
+import math
 
 def sfun(string):
     """
@@ -90,15 +91,25 @@ def unison_shuffled_copies(a, b):
     p = np.random.permutation(len(a))
     return a[p], b[p]
 
-def split_data(x_cut,y_cut_binary,splitratio = 0.1, shuffle = True):
+def split_data(x_cut,y_cut_binary, option = 'split',splitratio = 0.1, shuffle = True, kfold = 4):
 
     # shuffle data by default
     if shuffle:
         x_cut, y_cut_binary = unison_shuffled_copies(x_cut,y_cut_binary)
 
     # split-off test data
-    split_size = int(x_cut.shape[0]*splitratio)
-    y_cut_train, y_cut_test = y_cut_binary[split_size:], y_cut_binary[:split_size]
-    x_cut_train, x_cut_test = x_cut[split_size:], x_cut[:split_size]
-
-    return y_cut_train, y_cut_test, x_cut_train, x_cut_test
+    if option == 'split':
+        split_size = int(x_cut.shape[0]*splitratio)
+        y_cut_train, y_cut_test = y_cut_binary[split_size:], y_cut_binary[:split_size]
+        x_cut_train, x_cut_test = x_cut[split_size:], x_cut[:split_size]
+        return y_cut_train, y_cut_test, x_cut_train, x_cut_test
+    elif option == 'kfold':
+        x_kfold_retVal = list()
+        y_kfold_retVal = list()
+        split_size = int(math.floor(x_cut.shape[0]/kfold))
+        for i in range(0,kfold-1):
+            x_kfold_retVal.append(x_cut[i*split_size:(i+1)*split_size])
+            y_kfold_retVal.append(y_cut_binary[i*split_size:(i+1)*split_size])
+        x_kfold.retVal.append(x_cut[(kfold-1)*split_size:])
+        y_kfold.retVal.append(y_cut_binary[(kfold-1)*split_size:])
+        return x_kfold_retVal, y_kfold_retVal
