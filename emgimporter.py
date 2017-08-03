@@ -112,4 +112,4 @@ def split_data(x_cut,y_cut_binary, option = 'split',splitratio = 0.1, shuffle = 
             y_kfold_retVal.append(y_cut_binary[i*split_size:(i+1)*split_size])
         x_kfold.retVal.append(x_cut[(kfold-1)*split_size:])
         y_kfold.retVal.append(y_cut_binary[(kfold-1)*split_size:])
-        return x_kfold_retVal, y_kfold_retVal
+        return list(x_kfold_retVal, y_kfold_retVal)

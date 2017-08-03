@@ -95,10 +95,16 @@ feed_dic = emgimporter.import_folder(config.its,config.dic,path=config.path)
 x,y = emgimporter.prep_data(feed_dic,config.data_arch)
 if kfold == None:
     y_cut_train, y_cut_test, x_cut_train, x_cut_test = emgimporter.split_data(x,y,splitratio=0.05,shuffle=True)
+    x_cut_train= np.expand_dims(np.expand_dims(x_cut_train,axis=1),axis=-1)
+    x_cut_test= np.expand_dims(np.expand_dims(x_cut_test,axis=1),axis=-1)
 else:
-    x_kfold, y_kfold = emgimporter.split_data(x,y,shuffle=True,option='kfold',kfold= 6)
-x_cut_train= np.expand_dims(np.expand_dims(x_cut_train,axis=1),axis=-1)
-x_cut_test= np.expand_dims(np.expand_dims(x_cut_test,axis=1),axis=-1)
+    kfold_list = emgimporter.split_data(x,y,shuffle=True,option='kfold',kfold= 6)
+
+    for i,element in enumerate(kfold_list[0]):
+        x_kfold_prepped.append( np.expand_dims(np.expand_dims(element,axis=1),axis=-1) )
+
+
+
 
 # augment data
 x,y = augmentData(x_cut_train,y_cut_train,2,1)
@@ -202,8 +208,10 @@ for hidden_layers in range(*config.explorationStruct['hidden_layer']):
             history = AccuracyHistory()
 
             # learn model and plot show progress
-            model.fit(x,y,epochs = 1000, batch_size = 3000, validation_split=0.1, shuffle=True, callbacks = [early_stopping,history], verbose=0)
-            scores = model.evaluate(x_cut_test, y_cut_test, batch_size=1000, verbose=0)
+            if kfold == None:
+                model.fit(x,y,epochs = 1000, batch_size = 3000, validation_split=0.1, shuffle=True, callbacks = [early_stopping,history], verbose=0)
+                scores = model.evaluate(x_cut_test, y_cut_test, batch_size=1000, verbose=0)
+            else:
 
             tbn = datetime.now()
 
